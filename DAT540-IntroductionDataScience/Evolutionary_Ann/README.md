@@ -8,6 +8,8 @@ Throughout several iterations the car learns to hold a stick in equilibrium
 
 Given below is one solution state I found evolving over 50 generations for 'CartPole-v0' environment. 
 Ive never found it to fail even testing it over 10 minutes.
+
+![Training in action](../assets/Gym.gif)
 ```python
 0.69133231, -0.20516511, -0.75820921, 0.26613669, 
 0.27673464, -0.36717599,-0.26046508, -0.28477222, 
