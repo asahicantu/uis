@@ -335,6 +335,7 @@ there is simply no way to break the code
         * Enigma, Gagelin, Purple
       * Asymmetric, two-key, or public-key encryption
     * Steganography
+      * Hide Existence of message
 * **Cryptanalysis** Techniques used for deciphering a message without any knowledge of the enciphering details
   * Attack relies on the nature of the algorithm plus some knowledge of the general characteristics of the plaintext
   * Attack exploits the characteristics of the algorithm to attempt to deduce a specific plaintext or to deduce the key being used
