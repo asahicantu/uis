@@ -1,0 +1,10 @@
+\BOOKMARK [1][-]{section.1}{Part I. Polyalphabetic ciphers.}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Ciphered text statistical analysis}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Complex Ciphered text statistical analysis }{section.1}% 3
+\BOOKMARK [1][-]{section.2}{Part II. Simplified DES.}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{SDES Tests}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{Triple SDES Tests}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{SDES Text Cracking}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{Triple SDES Text Cracking}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.5}{Server implementation for messaging ciphering/deciphering}{section.2}% 9
+\BOOKMARK [1][-]{section.3}{Conclusion}{}% 10
