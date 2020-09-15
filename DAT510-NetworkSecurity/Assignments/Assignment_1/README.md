@@ -43,25 +43,25 @@ the back end.
     pip install -r requirements.txt
     ```
     to inistall all the required packages to run the code properly 
-3. Open [Part1.ipynb](Part1.ipynb)
+3. Open [Part1.ipynb](src/Part1.ipynb)
    1. If required run the command 
    ```bash
     jupyter notebook Part1.ipynb
    ```
    1. If required re-run the code and visualize all the results from implemented algorithms
-4. Open [Part2.ipynb](Part2.ipynb)
+4. Open [Part2.ipynb](src/Part2.ipynb)
    1. Required files:
-      1. [SDES.py](SDES.py) Class implementation for SDES/3SDES algorithms
-      2. [ctx1.txt](ctx1.txt) SDES ciphered string
-      3. [ctx2.txt](ctx2.txt) 3SDED ciphered string
-      4. Some immages available in [Assets](Assets) folder
+      1. [SDES.py](src/SDES.py) Class implementation for SDES/3SDES algorithms
+      2. [ctx1.txt](src/ctx1.txt) SDES ciphered string
+      3. [ctx2.txt](src/ctx2.txt) 3SDED ciphered string
+      4. Some immages available in [Assets](src/Assets) folder
    2. If required run the command 
    
    ```bash
     jupyter notebook Part2.ipynb
    ```
    1. If required re-run the code and visualize all the results from implemented algorithms
-5. Use [Server.py](Server.py) to visualize the server implememntation
+5. Use [Server.py](src/Server.py) to visualize the server implememntation
    1. Run the command
    ```bash
     python server.py
@@ -79,11 +79,6 @@ the back end.
 |   README.md                          # This readme file
 |   Report.pdf                         # Technical report of this assignment commpiled in LATEX
 |   Report.pptx                        # Presentation with recorded voice for this assignment
-|
-+---doc
-|   |   Assignment_1.pdf               # PDF version of the assignment and the tasks to be solved
-|   |   SDES.pdf                       # SDES Standard
-|   \---tex                            # Latex source code for Report.pdf
 +---src
 |   |   ctx1.txt                       # Ciphered binary text encrypted with SDES
 |   |   ctx2.txt                       # Ciphered binary text encrypted with 3SDES
