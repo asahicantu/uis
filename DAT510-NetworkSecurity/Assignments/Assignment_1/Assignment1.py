@@ -1,3 +1,0 @@
-'''
-Assignment consists on decrypting
-'''

@@ -80,6 +80,27 @@ class SDES:
         return sbox[row][col]
 
     @staticmethod
+    def split_string(string,chunk_size):
+        str_len = len(string)
+        chunks = str_len//chunk_size
+        retval = []
+        for i in range(chunks):
+            chunk = string[i*chunk_size:i*chunk_size + chunk_size]
+            retval.append(chunk)
+        offset = str_len % chunk_size
+        if offset > 0:
+            retval.append(string[-offset:])
+        return retval
+
+    @staticmethod
+    def get_chunk_text_frequency(txt_list):
+        chunk_dict = {}
+        for item in txt_list:
+            chunk_dict[item] = 1 if item not in chunk_dict else chunk_dict[item] + 1
+        chunk_dict = {k: v for k, v in sorted(chunk_dict.items(), key=lambda item: item[1],reverse=True)}
+        return chunk_dict
+
+    @staticmethod
     def xor(val1,val2):
         return int(val1,2) ^ int(val2,2)
 

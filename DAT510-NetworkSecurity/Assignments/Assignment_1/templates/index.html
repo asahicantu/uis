@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Encryption/Decryption</title>
+</head>
+<body>
+    <h1>Text Encryption and Decryption example</h1>
+
+    <div>
+        <p>
+            This is a web server made to test triple-SDES functinality for encryption and decryption of a given messages.
+        </p>
+        <p>
+            Use the follwoing fields to call the encryption algorithm an get as output the encryption or decryption result.
+        </p>       
+        You can also use directly the url to proof encryption, decryption mechanism.
+    </div>
+
+    <form action="/encrypt" method="get">
+        <input type="text" name="plainText" id="txtPlainText">
+        <input type="submit" value="Encrypt text">
+    </form>
+
+    <form action="/decrypt" method="get">
+        <input type="text" name="cipherText" id="txtCipherText">
+        <input type="submit" value="Decrypt text">
+    </form>
+    
+</body>
+</html>
