@@ -37,18 +37,19 @@ the back end.
 
 ## How to use
 
-1. Run the command
+1. Navigate to the directory 'src'
+2. Run the command
     ```bash
     pip install -r requirements.txt
     ```
     to inistall all the required packages to run the code properly 
-2. Open [Part1.ipynb](Part1.ipynb)
+3. Open [Part1.ipynb](Part1.ipynb)
    1. If required run the command 
    ```bash
     jupyter notebook Part1.ipynb
    ```
-   2. If required re-run the code and visualize all the results from implemented algorithms
-3. Open [Part2.ipynb](Part2.ipynb)
+   1. If required re-run the code and visualize all the results from implemented algorithms
+4. Open [Part2.ipynb](Part2.ipynb)
    1. Required files:
       1. [SDES.py](SDES.py) Class implementation for SDES/3SDES algorithms
       2. [ctx1.txt](ctx1.txt) SDES ciphered string
@@ -59,8 +60,8 @@ the back end.
    ```bash
     jupyter notebook Part2.ipynb
    ```
-   3. If required re-run the code and visualize all the results from implemented algorithms
-4. Use [Server.py](Server.py) to visualize the server implememntation
+   1. If required re-run the code and visualize all the results from implemented algorithms
+5. Use [Server.py](Server.py) to visualize the server implememntation
    1. Run the command
    ```bash
     python server.py
@@ -69,51 +70,30 @@ the back end.
    1. It will mount a flask server on port 8080. once the command is run you can browse the code example by going to  [http://127.0.0.1:8080/ ](http://127.0.0.1:8080/)
 
    2. **Important!** Make sure to close the server connection once the test is finished to unlock the port connection
-5. Use [Report.pdf](Report.pdf) to read the technical report
-6. Use [Report.pptx](Report.pptx) to view the prepared presentation
+6. Use [Report.pdf](Report.pdf) to read the technical report
+7. Use [Report.pptx](Report.pptx) to view the prepared presentation
 
 ## Directory structure
 
 ```bash
-/
-|   Assignment_1.pdf    # PDF version of the assignment and the tasks to be solved
-|   ctx1.txt            # Ciphered binary text encrypted with SDES
-|   ctx2.txt            # Ciphered binary text encrypted with 3SDES
-|   Part1.ipynb         # Part 1 of given assignment (can be viewed in Assignment_1.pdf )
-|   Part2.ipynb         # Part 1 of given assignment (can be viewed in Assignment_2.pdf )
-|   README.md           # This readme file
-|   Report.pdf          # Technical report of this assignment commpiled in LATEX
-|   Report.pptx         # Presentation with recorded voice for this assignment
-|   requirements.txt    # Python packages to be installed and run jupyter notebooks as well as Serve.py
-|   SDES.py             # Implementation of SDES and 3SDES algorithm
-|   Server.py           # Implementation of a mini web server using Flask
+|   README.md                          # This readme file
+|   Report.pdf                         # Technical report of this assignment commpiled in LATEX
+|   Report.pptx                        # Presentation with recorded voice for this assignment
 |
-+---Assets              # Assets folder with images used for the presentation of this assignment
-|       bigramfreqmatrix2.png
-|       bigramfreqtop.png
-|       bigramfreqtoplist.png
-|       cypher_book.png
-|
-+---templates           # Templates folder used by Flask.
-|       index.html      # Main page of mini web server showing basic functionality and description of the excercise
-|
-+---tex                 # Latex Folder. Is the source code where the report was developed. Report.pdf
-|   |   main.tex        # Main Latex File
-|   |   references.bib  # References
++---doc
+|   |   Assignment_1.pdf               # PDF version of the assignment and the tasks to be solved
+|   |   SDES.pdf                       # SDES Standard
+|   \---tex                            # Latex source code for Report.pdf
++---src
+|   |   ctx1.txt                       # Ciphered binary text encrypted with SDES
+|   |   ctx2.txt                       # Ciphered binary text encrypted with 3SDES
+|   |   Part1.ipynb                    # Part 1 of given assignment (can be viewed in Assignment_1.pdf )
+|   |   Part2.ipynb                    # Part 2 of given assignment (can be viewed in Assignment_2.pdf )
+|   |   requirements.txt               # Python packages to be installed and run jupyter notebooks as well as Serve.py
+|   |   SDES.py                        # Implementation of SDES and 3SDES algorithm
+|   |   Server.py                      # Implementation of a mini web server using Flask
 |   |
-|   \---assets          # Images used for this report
-|           3SDESCrack.png
-|           3SDES_Test.png
-|           bruteforce.png
-|           CipherText.png
-|           cryptstatistics.png
-|           CryptStatisticsDict.png
-|           cypher_book.png
-|           SDESCrack.png
-|           SDES_Test.png
-|           ServerCrypt.png
-|           ServerDecrypt.png
-|           ServerIndex.png
-|           timeconsumption.png
-|
+|   +---Assets                         # Images used in the jupyter notebooks
+|   +---templates                      # Templates folder used by Flask.
+|   |       index.html                 # Main page of mini web server showing basic functionality and description of the excercise
 ```
