@@ -1,4 +1,3 @@
-#%%
 import sys
 import random
 import sympy
@@ -23,8 +22,6 @@ class BBS(object):
             return p * q
         else: # Recalculate in case p == q
             return self.generateN(bits)
-
-    
 
     def next(self, numBits):
         '''Returns up to numBit random bits'''

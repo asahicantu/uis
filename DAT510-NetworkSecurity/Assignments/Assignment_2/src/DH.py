@@ -3,12 +3,14 @@
 @Student id: 253964
 @Description: Diphie-Hellman key exchange implementation
 '''
+import math
 import argparse
 import logging
 import hashlib
 import base64
 from Cryptodome.Cipher import AES
 from Cryptodome import Random
+from BBS import BBS
 
 logging.basicConfig(level=logging.INFO)
 logger= logging.getLogger(__name__)
@@ -36,16 +38,19 @@ class DH(object):
     def log_message(message):
         logger.info(message)
         
-    def __init__(self, public_key1, public_key2, private_key):
+    def __init__(self, public_key1, public_key2):
         DH.log_message("Initializing Diffie–Hellman key exchange...")
-        DH.log_message(f'\tPublic key1: {public_key1}')
-        DH.log_message(f'\tPublic key2: {public_key2}')
-        DH.log_message(f'\tPrivate key: {private_key}')
+        
+        self.bbs = BBS(128)
         self.public_key1 = public_key1
         self.public_key2 = public_key2
-        self.private_key = private_key
+        self.private_key = self.bbs.next(16)
         self.shared_key = None
         self.full_key = None
+        DH.log_message(f'\tPublic key1: {self.public_key1}')
+        DH.log_message(f'\tPublic key2: {self.public_key2}')
+        DH.log_message(f'\tPrivate key: {self.private_key}')
+
     
     @staticmethod
     def _pad(s):
@@ -69,6 +74,14 @@ class DH(object):
         self.full_key = hashlib.sha256(str(self.full_key).encode()).digest()
         DH.log_message(f'\tAfter SHA Key created {self.full_key}!')
         return self.full_key
+
+    def next_key(self):
+        DH.log_message(f'Setting seed for next private key with shared key {self.shared_key}...')
+        self.bbs.setSeed(self.shared_key)
+        self.private_key = self.bbs.next(16)
+        self.create_shared_key() 
+        self.full_key = None
+        
 
     
     def encrypt(self, message):
@@ -95,3 +108,19 @@ class DH(object):
         message = message.decode('utf-8')
         DH.log_message(f'Message Decrypted! {message}')
         return message
+    
+    
+    
+    @staticmethod
+    def primRoots(modulo,size = 1):
+        primRoots = []
+        coprimes = {n for n in range(1, modulo) if math.gcd(n, modulo) == 1}
+        for g in range(1,modulo):
+            powers = set()
+            for power in range(1,modulo):
+                powers.add(pow(g, power, modulo))
+                if coprimes == powers:
+                    primRoots.append(g)
+                    if len(primRoots) == size:
+                        return primRoots
+        return primRoots

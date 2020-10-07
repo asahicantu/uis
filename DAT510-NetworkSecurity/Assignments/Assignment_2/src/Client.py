@@ -6,16 +6,30 @@ import socketio
 import datetime
 
 from DH import DH
-from BBS import BBS
+
 import sympy
 import random
-import BigPrime as bp
-from Cryptodome.Cipher import AES
+import logging
+import os
 
 
 
-sio = socketio.Client(logger=True)
 
+if not os.path.isdir('log'):
+    os.mkdir('log')
+filename = datetime.datetime.now()
+filename = filename.strftime("%Y%m%d%H%M%S")
+filename = 'log\\Client_' + filename + '.log'
+
+logger = logging.getLogger('client_logger')
+logger.setLevel(logging.INFO)
+fh = logging.FileHandler(filename)
+fh.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+
+sio = socketio.Client(logger=False)
 class Messenger(wx.Frame):    
     def __init__(self):
         super().__init__(parent=None, title='CryptoChat Application')
@@ -32,7 +46,7 @@ class Messenger(wx.Frame):
         self.connected = False
         self.sessionOpen = False
 
-        self.bbs = BBS(128)
+        
         self.dh = None
         self.users = {}
 
@@ -98,10 +112,11 @@ class Messenger(wx.Frame):
         self.btnSendMsg.Bind(wx.EVT_BUTTON,self.OnSendMsg)
 
         self.initControls()
+        
 
     def log(self,msg):
         self.SetStatusText(msg)
-        print(msg)
+        logger.info(msg)
 
     def initControls(self):
         self.cmbUsers.Enabled = False
@@ -130,31 +145,40 @@ class Messenger(wx.Frame):
     def create_public_keys(self):
         self.log(f'Creating public keys...')
         key_1 = sympy.randprime(2**17,2**18)
-        key_2 = bp.primRoots(key_1)[0]
+        key_2 = DH.primRoots(key_1)[0]
         self.log(f'Public Keys created {key_1} - {key_2}')
         return(key_1,key_2)
 
     
     def create_shared_key(self,key_1,key_2):
         self.log('Creating Shared Key...')
-        private_key = sympy.randprime(2**17,2**18)
-        self.dh = DH(key_2,key_1,private_key)
+        self.dh = DH(key_2,key_1)
         self.dh.create_shared_key()
         self.log('Shared Key Created!')
         return self.dh.shared_key
 
     
     def create_full_key(self,shared_key):
+        self.log(f'Creating Full key with shared key {shared_key}...')
         self.dh.create_full_key(shared_key)
+    
+    def next_key(self):
+        self.log("Generating new private key...")
+        self.dh.next_key()
+        self.log('Creating Shared Key...')
+        self.log(f'Shared Key Created! {self.dh.private_key} - {self.dh.shared_key}')
+        return self.dh.shared_key
      
     def OnConnect(self, event):
         if not self.connected: #Connect to web server
             self.log("Connecting to server...")
             #try:
             self.btnConnect.LabelText = 'Disconnect'
-            sio.connect(self.txtServer.Value,)
-            self.log(f'Connected to server with session id:{sio.sid}')
-            sio.emit('login', {'session':sio.sid,'user':self.txtUser.Value})
+            user = self.txtUser.Value
+            server = self.txtServer.Value
+            sio.connect(server)
+            self.log(f'Connected to server {server} with user {user} session id:{sio.sid}')
+            sio.emit('login', {'session':sio.sid,'user':user})
             self.cmbUsers.Clear()
             self.connected = True
             # except:
@@ -201,8 +225,16 @@ class Messenger(wx.Frame):
             self.txtChat.Newline()
             self.log('Encrypting message...')
             enc = self.dh.encrypt(msg)
-            s_id = self.users[self.cmbUsers.GetStringSelection()]
-            data = {'s_id':s_id,'enc':enc}
+            user = self.cmbUsers.GetStringSelection()
+            s_id = self.users[user]
+            data = {
+                'requester':self.txtUser.Value, 
+                'requester_sid': sio.sid,
+                'requester_shared_key':self.dh.shared_key,
+                'user': user,
+                'user_sid':s_id,
+                'user_shared_key':None,
+                'enc':enc}
             self.log(f'Sending Encrypted  message...{enc}')
             sio.emit('sendmessage',data)
             self.txtMsg.Clear()
@@ -215,10 +247,7 @@ class Messenger(wx.Frame):
         self.txtChat.EndTextColour()
         self.txtChat.Newline()
         self.log('Message decrypted!')
-            
 
-
-        
     def OnExit(self, event):
             """Close the frame, terminating the application."""
             self.Close(True)
@@ -234,13 +263,7 @@ class Messenger(wx.Frame):
         wx.MessageBox(message,"About Client Application",wx.OK|wx.ICON_INFORMATION)
 
 
-    def on_press(self, event):
-        value = self.text_ctrl.GetValue()
-        if not value:
-            print("You didn't enter anything!")
-        else:
-            print(f'You typed: "{value}"')
-
+  
 @sio.event
 def connect():
     print("Socket Connected")
@@ -278,54 +301,45 @@ def users(data):
 @sio.on("beginchat")
 def beginchat(data):
     requester = data['requester']
-    requester_sid = data['requester_sid']
     user = data['user']
-    session_id = data['user_sid']
     key_1= data['key_1']
     key_2 = data['key_2']
-    requester_shared_key = data['requester_shared_key']
     msg  =f'{requester} wants to start chat session with {user}... '  
-    print(msg)
+    frame.log(msg)
     if frame.connected and not frame.sessionOpen:
         result = wx.MessageDialog(frame, msg, caption='Click Yes to Accept',
               style=wx.YES_NO|wx.CENTRE, pos=wx.DefaultPosition).ShowModal()
-        #result = wx.MessageBox(frame,message,"Click Yes to Accept", wx.YES_NO, frame)
         if result == wx.ID_YES:
             frame.log('Linking messaging...')
             location = frame.cmbUsers.FindString(requester)
             frame.cmbUsers.SetSelection(location)
             frame.cmbUsers.Enabled = False
             frame.btnChatWith.Enabled = False
-
             shared_key = frame.create_shared_key(key_1,key_2)
             data['user_shared_key'] = shared_key
-            sio.emit('handshake',data)
+            sio.emit('onhandshake',data)
 
 @sio.on('handshake')
 def handshake(data):
-    requester = data['requester']
     requester_sid = data['requester_sid']
     requester_shared_key = data['requester_shared_key']
-    user = data['user']
     user_sid = data['user_sid']
     user_shared_key = data['user_shared_key']
-    key_1 = data['key_1']
-    key_2 = data['key_2']
     shared_key = None
     if sio.sid == requester_sid:
-        shared_key = user_shared_key
+        shared_key = user_shared_key 
     elif sio.sid == user_sid:
         shared_key = requester_shared_key
     else:
-        self.log('Invalid handshake, could not establish communication')
+        frame.log('Invalid handshake, could not establish communication')
     
     if shared_key:
-        frame.log('Shared key created!, connection established')
         frame.create_full_key(shared_key)
         frame.btnChatWith.Enabled = False
         frame.txtMsg.Enabled = True
         frame.btnSendMsg.Enabled = True
         frame.txtChat.Enabled = True
+        frame.log(f'Full key created! {frame.dh.full_key}, connection established')
         
 @sio.on("sendmessage")
 def sendmessage(data):
@@ -333,48 +347,31 @@ def sendmessage(data):
     print(f'Message received {enc} decryptinc')
     frame.SetStatusText(f'Message received, decrypting...')
     frame.decryptMessage(enc)
+    user = frame.cmbUsers.GetStringSelection()
+    s_id = frame.users[user]
+    data = {
+            'requester':frame.txtUser.Value, 
+            'requester_sid': sio.sid,
+            'requester_shared_key':frame.next_key(),
+            'user': user,
+            'user_sid':s_id,
+            'user_shared_key':None}
+    sio.emit('onnextkey',data)
+
+
+@sio.on("nextkey")
+def nextkey(data):
+    frame.log('Generating next shared key')
+    data['user_shared_key'] = frame.next_key()
+    sio.emit('onhandshake',data)
 
 
 
 if __name__ == '__main__':
     app = wx.App()
     frame = Messenger()
-    frame.SetSize(wx.Size(600,700))
+    frame.SetSize(wx.Size(600,500))
+    frame.log('Client Application has started')
     app.MainLoop()
     
     
-
-    
-
-
-
-# @sio.event
-# def connect():
-#     print("Connected")
-
-# @sio.event
-# def connect_error():
-#     frame.connected = False
-#     frame.SetStatusText("Server Connection lost!")
-#     frame.OnConnect(None)
-#     print("The connection failed!")
-
-# @sio.event
-# def disconnect():
-#     frame.connected = False
-#     frame.SetStatusText("Server Connection lost!")
-#     frame.OnConnect(None)
-#     print("Disconnected from server")
-
-
-
-# def get_account_info():
-
-#     api_url = '{0}account'.format(api_url_base)
-
-#     response = requests.get(api_url, headers=headers)
-
-#     if response.status_code == 200:
-#         return json.loads(response.content.decode('utf-8'))
-#     else:
-#         return None
