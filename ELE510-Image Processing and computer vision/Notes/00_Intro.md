@@ -181,3 +181,29 @@ Perspective projection
 
 
 
+![robot_vision_family_tree.png](https://blog.robotiq.com/hs-fs/hubfs/images/Blog/robot_vision_family_tree.png?width=402&height=271&name=robot_vision_family_tree.png)
+
+https://blog.robotiq.com/robot-vision-vs-computer-vision-whats-the-difference
+
+[^jkljlk]: 
+
+> mm,m,
+>
+> ll;
+>
+> ghjgkjh
+
+
+
+$$
+\mu 
+$$
+
+
+
+------
+
+
+
+
+
