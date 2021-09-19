@@ -2,3 +2,6 @@
 __pycache__
 DAT510-NetworkSecurity/Assignments/Assignment_2/Report.mp4
 .ipynb_checkpoints*
+*.aux
+*.log
+*.gz
